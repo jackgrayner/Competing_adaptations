@@ -1,20 +1,15 @@
-#vcf1<-read.table('/Users/jack/Desktop/PD/Cw crosses/rad-seq/new_genome/populations.snps.vcf',h=T)
+vcf<-read.table('pop.snps.prefilter.vcf',h=T)
 
-#find to right of 3rd colon of genotype field -- we want to extract 'DP'
-#for bcftools vcf it's GT:PL:DP:GQ
+#find depth field
 extr.depth<-function(strings){
   ind = unlist(gregexpr(pattern = ":", text = strings))
-  if (length(ind) < 3){NA}
-  else{substr(strings, ind[length(ind) - 1] + 1, ind[length(ind)] - 1)}
+  if (length(ind) < 4){NA}
+  else{substr(strings, ind[length(ind) - 3] + 1, ind[length(ind)-2] - 1)}
 }
-sapply("GT:PL:DP:GQ",extr.depth)
-sapply("1/1:23,7,0:15:9",extr.depth)
-as.numeric(sapply(testString,extr.depth))
+means<-read.table('averageList.txt',h=F)[,1]
+#means<-rnorm(380,mean=30,sd=5)
 
-#read mean sequencing depth per sample (in same order as vcf header)
-means<-read.table('averageList.txt',h=F)
-#read sex info from .fam file
-sexes<-read.table('plink.fam1',h=F)[,5]
+sexes<-read.table('plink.fam',h=F)[,5]
 
 #loop to remove genotypes for samples with abnormal sequencing depth
 for (rowNum in c(1:nrow(vcf))){
@@ -38,6 +33,10 @@ for (rowNum in c(1:nrow(vcf))){
         else if (as.numeric(sapply(gen,extr.depth)) < (1/3 * meanDepth)) {
           vcf[rowNum,sampNum]<-"./."
         }
+        #else if depth <10, replace as null
+        else if (as.numeric(sapply(gen,extr.depth)) < 10) {
+          vcf[rowNum,sampNum]<-"./."
+        }
         #else if locus is X-linked and sample is male, halve filtering criteria
       } else if (vcf[rowNum,1]=="Scaffold_1" & sexes[d]=="1") {
         #if X-linked, alter criteria
@@ -49,13 +48,17 @@ for (rowNum in c(1:nrow(vcf))){
         else if (as.numeric(sapply(gen,extr.depth)) < (1/6 * meanDepth)) {
           vcf[rowNum,sampNum]<-"./."
         }
+        #else if depth <10, replace as null
+        else if (as.numeric(sapply(gen,extr.depth)) < 10) {
+          vcf[rowNum,sampNum]<-"./."
+        }
       }
     }
   }
-  #progress
   if (rowNum %% 1000==0){
     print(paste(round(rowNum/(nrow(vcf))*100,digits=2),"% done"))
   }
 }
 
 
+write.table(vcf,file='pop.snps.filtered.vcf',sep='\t',row.names=FALSE,quote=FALSE)
