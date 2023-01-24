@@ -28,4 +28,4 @@ rm polarised.$VCF1.depthfilt.vcf1
 
 plink --vcf polarised.$VCF1.depthfilt.vcf --make-bed --allow-extra-chr --out $VCF.final 
 cp plink_correctedsex.fam ./$VCF.final.fam
-plink --bfile $VCF.final --mind 0.6 --geno 0.3 --assoc --allow-extra-chr --adjust --out CwPop_gwas 
+plink --bfile $VCF.final --mind 0.6 --geno 0.3 --assoc fisher --allow-extra-chr --adjust --out CwPop_gwas 
