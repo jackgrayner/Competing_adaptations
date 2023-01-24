@@ -1,15 +1,18 @@
-vcf<-read.table('pop.snps.prefilter.vcf',h=T)
+vcf1 = commandArgs(trailingOnly=TRUE)[1]
+vcf2 = commandArgs(trailingOnly=TRUE)[2]
+vcf<-read.table(vcf1,h=F)
 
-#find depth field
+#find to right of 2nd colon of genotype field -- we want to extract '24'
+#testString<-"1/1:24:0,24:40:-68.42,-7.55,-0.00"
 extr.depth<-function(strings){
   ind = unlist(gregexpr(pattern = ":", text = strings))
   if (length(ind) < 4){NA}
   else{substr(strings, ind[length(ind) - 3] + 1, ind[length(ind)-2] - 1)}
 }
-means<-read.table('averageList.txt',h=F)[,1]
-#means<-rnorm(380,mean=30,sd=5)
 
-sexes<-read.table('plink.fam',h=F)[,5]
+#read in list of average sequencing depths
+means<-read.table('averageList.txt',h=F)[,1]
+sexes<-read.table('plink_correctedsex.fam',h=F)[,5]
 
 #loop to remove genotypes for samples with abnormal sequencing depth
 for (rowNum in c(1:nrow(vcf))){
@@ -48,8 +51,8 @@ for (rowNum in c(1:nrow(vcf))){
         else if (as.numeric(sapply(gen,extr.depth)) < (1/6 * meanDepth)) {
           vcf[rowNum,sampNum]<-"./."
         }
-        #else if depth <10, replace as null
-        else if (as.numeric(sapply(gen,extr.depth)) < 10) {
+        #else if depth <5, replace as null
+        else if (as.numeric(sapply(gen,extr.depth)) < 5) {
           vcf[rowNum,sampNum]<-"./."
         }
       }
@@ -60,5 +63,4 @@ for (rowNum in c(1:nrow(vcf))){
   }
 }
 
-
-write.table(vcf,file='pop.snps.filtered.vcf',sep='\t',row.names=FALSE,quote=FALSE)
+write.table(vcf,file=vcf2,sep='\t',row.names=FALSE,quote=FALSE)
