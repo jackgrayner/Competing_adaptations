@@ -12,7 +12,8 @@ do
 done
 
 #align.sh
-hisat2 --rna-strandness RF --dta -x ~/scratch/Cricket.curated_hisat2 -1 ./$1.clean.R1.fq.gz -2 ./$1.clean.R2.fq.gz | samtools sort -o ./$1.bam
+hisat2 --rna-strandness RF --dta -x ~/scratch/Cricket.curated_hisat2 -1 ./$1.clean.R1.fq.gz -2 ./$1.clean.R2.fq.gz | \ 
+	samtools sort -o ./$1.bam
 samtools index $1.bam
 
 #string_assem.sh
