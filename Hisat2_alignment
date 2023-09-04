@@ -1,0 +1,32 @@
+#sortmeRNA.sh
+sortmerna -paired_out -other ./$1/out/$1.clean -fastx -ref ~/scratch/silva-euk-18s-id95.fasta \
+  -ref ~/scratch/silva-euk-28s-id98.fasta -reads ./*$1_*R1*fastq.gz -reads ./*$1_*R2*fastq.gz -workdir ./$1
+
+#reinterweave.sh
+for SAMPLE1 in ./*.R1.fastq.gz
+do
+	SAMPLE=${SAMPLE1%.R1.fastq.gz}
+	gunzip ./$SAMPLE/out/$SAMPLE.clean.fq.gz
+	./unmerge_paired_reads.sh ./$SAMPLE/out/$SAMPLE.clean.fq ./cleaned/$SAMPLE.clean.R1.fq ./cleaned/$SAMPLE.clean.R2.fq
+	gzip ./$SAMPLE/out/$SAMPLE.clean.fq
+done
+
+#align.sh
+hisat2 --rna-strandness RF --dta -x ~/scratch/Cricket.curated_hisat2 -1 ./$1.clean.R1.fq.gz -2 ./$1.clean.R2.fq.gz | samtools sort -o ./$1.bam
+samtools index $1.bam
+
+#string_assem.sh
+stringtie -B -p 4 -G ~/scratch/Official.Cricket_v2.curated.geneset.gff -o ballgown/$1/stringtie.$1.gtf $1.bam
+
+#string_merge.sh
+stringtie --merge -p 8 -G ~/scratch/Official.Cricket_v2.curated.geneset.gff -o stringtie_merged.gtf ./mergelist.txt
+
+#string_quant.sh
+stringtie -e -B -p 4 -G stringtie_merged.gtf -o ballgown/$1/$1.gtf $1.bam
+
+#prepDE (produce gene count matrix)
+python prepDE.py -i ./ballgown/ -l 150 -c -g gene_cluster_count.csv
+python prepDE.py -i ./ballgown/ -l 150 -g gene_count_matrix.csv
+wc -l gene_cluster_count.csv
+wc -l gene_count_matrix.csv
+#numbers very similar, so use gene_count_matrix.csv for downstream analyses
