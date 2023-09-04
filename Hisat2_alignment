@@ -2,7 +2,7 @@
 sortmerna -paired_out -other ./$1/out/$1.clean -fastx -ref ~/scratch/silva-euk-18s-id95.fasta \
   -ref ~/scratch/silva-euk-28s-id98.fasta -reads ./*$1_*R1*fastq.gz -reads ./*$1_*R2*fastq.gz -workdir ./$1
 
-#reinterweave.sh
+#deinterweave.sh (using unmerge script from sortmeRNA)
 for SAMPLE1 in ./*.R1.fastq.gz
 do
 	SAMPLE=${SAMPLE1%.R1.fastq.gz}
