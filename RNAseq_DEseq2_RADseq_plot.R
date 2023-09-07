@@ -3,8 +3,35 @@ library(edgeR)
 library(pheatmap)
 library(ggplot2)
 library(RColorBrewer)
+library(stringr)
 
-setwd('/Users/Jack/Desktop/PD/Cw crosses/rna/new_genome/new_anno')
+###READ IN RAD DATA
+datx<-read.table('CwPop_gwas.assoc.fisher',h=T)
+datx$CHR<-sub("Scaffold_","",datx$CHR)
+datx<-datx[datx$CHR<15,]
+datx[datx$CHR=="1",]$CHR<-"1 (X)"
+datx$CHR<-factor(datx$CHR,levels=c("1 (X)","2","3","4","5","6",
+                                   "7","8","9","10","11","12",
+                                   "13","14"))
+
+datx$FDR<-(-log10(datx$P*nrow(datx)))
+datx$P1<-(datx$P*nrow(datx))
+datx$DE<-"NS"
+datx[datx$FDR>2,]$DE<-"sig."
+
+cw_all<-ggplot(datx,aes(x=BP/1000000,y=(FDR),colour=DE))+
+  geom_point(alpha=0.7,size=0.5)+
+  scale_colour_manual(values=c('#555555',"#752b2b"))+
+  facet_grid(.~CHR,scales='free_x',space='free_x',switch = "both")+
+  theme_bw()+ylab('-log10(P_adj)')+
+  theme(panel.grid=element_blank())+
+  geom_hline(yintercept=2,linetype='dotted',colour='#5aa8ed')+
+  theme(legend.position='none',axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),axis.title.x=element_blank(),
+        panel.border=element_blank())
+
+
+#RNA-seq analysis
 pheno<-read.csv('../phenotype.csv',row.names=1)
 pheno$Cw<-factor(substr(pheno$Phenotype,start=6,stop=7))
 pheno$Fw<-factor(substr(pheno$Phenotype,start=3,stop=4))
@@ -44,7 +71,6 @@ summary(resOrdered.cw)
 res.fw <- results(dds, name="Fw_Nw_vs_Fw",alpha=0.05)
 resOrdered.fw <- res.fw[order(res.fw$pvalue),]
 summary(resOrdered.fw)
-
 
 #merge with position info
 s.pos<-read.table('stringtie_pos.tsv',h=T)
@@ -94,14 +120,14 @@ fw.twas_hor<-ggplot(fw.dge.pos,aes(x=mean/1e+06,y=-log10(padj)))+
   geom_rug(data=fw.dge.pos[!fw.dge.pos$DE=="NS",],aes(x=mean/1e+06),
            sides='b',alpha=0.3,colour='red')
 
-grid.arrange(cw.twas_hor+ggtitle('Curly-wing DEGs'),
-             fw.twas_hor+ggtitle('Flatwing DEGs'),nrow=2)
 
-ggsave('CwRAD_DEGs_pos_hor.png',dpi=600,height=9,width=9,
-    grid.arrange(cw_all+ggtitle('Curly-wing genetic association'),
-                 cw.twas_hor+ggtitle('Curly-wing DEGs'),
-                 fw.twas_hor+ggtitle('Flatwing DEGs'),nrow=3)
+ggsave('CwRAD_DEGs_pos_hor.png',
+       dpi=600,height=6,width=7.5,
+       grid.arrange(cw_all+ggtitle('Curly-wing genetic association')+labs(tag="A"),
+                    cw.twas_hor+ggtitle('Curly-wing DEGs')+labs(tag="B "),
+                    fw.twas_hor+ggtitle('Flatwing DEGs')+labs(tag="C"),nrow=3)
 )
+
 
 
 #DEcw heatmap
