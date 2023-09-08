@@ -1,0 +1,47 @@
+initialize() {
+initializeMutationRate(0);
+initializeMutationType("m2", 1.0, "f", 0); // introduced mutation
+initializeMutationType("m3", 1.0, "f", 0); // introduced mutation
+m2.convertToSubstitution = F;
+m3.convertToSubstitution = F;
+initializeGenomicElementType("g1", m2, c(0,0));
+initializeGenomicElement(g1, 0, 99999);
+initializeGenomicElementType("g2", m3, 1.0);
+initializeGenomicElement(g2, 100000, 199999);
+initializeRecombinationRate(1e-8);
+}
+1 early() { sim.addSubpop("p1", 500); }
+
+//add mutations
+1 late() {
+target = sample(p1.genomes, 5);
+target.addNewDrawnMutation(m2, 10000);
+target = sample(p1.genomes, 5);
+target.addNewDrawnMutation(m3, 189999);
+}
+
+//define fitness of mutations
+mutationEffect(m2) {
+	fitinc = 0.15;
+	if (individual.genome1.countOfMutationsOfType(m3))
+		return effect + fitinc;
+	else if (individual.genome2.countOfMutationsOfType(m3))
+		return effect + fitinc;
+	else
+		return effect + fitinc;
+}
+
+mutationEffect(m3) {
+	fitinc = 0.15;
+	if (individual.genome1.countOfMutationsOfType(m2))
+		return effect + fitinc;
+	else if (individual.genome2.countOfMutationsOfType(m2))
+		return effect + fitinc;
+	else
+		return effect + fitinc;
+}
+
+
+500 late(){
+sim.simulationFinished();
+}
