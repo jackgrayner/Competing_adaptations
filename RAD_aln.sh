@@ -6,5 +6,5 @@
 FILES="./*.fq.gz"
 for f in $FILES
 do
- bwa mem -M -t 16 ~/scratch/Cricket.curated.scaff_v2.fasta $f > $f.sam
+ bwa mem -M -t 8 ~/scratch/Cricket.curated.scaff_v2.fasta $f > $f.sam
 done
