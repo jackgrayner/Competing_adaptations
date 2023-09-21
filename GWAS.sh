@@ -18,3 +18,8 @@ plink --vcf $vcf.recode_anno.vcf.gz --double-id --make-bed --allow-extra-chr --o
 cp cw.fam ./$vcf.fam
 plink --bfile $vcf --assoc fisher --double-id --allow-extra-chr --maf 0.15 --geno 0.2 --out $vcf
 
+#LD
+plink --allow-extra-chr --vcf $vcf.recode_anno.vcf.gz \
+--chr Scaffold_2 --double-id --remove remove.txt --thin 0.001 --make-bed --snps-only --geno 0.5 --allow-no-sex \
+--out popgenKCG_2_LD --export HV
+java -jar ~/scratch/apps/Haploview.jar -memory 5000
