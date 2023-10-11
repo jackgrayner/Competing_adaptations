@@ -14,6 +14,7 @@ vcftools --gzvcf $vcf.vcf.gz --maf 0.1 --minDP 5 --maxDP 100 --minQ 20 --minGQ 2
 bgzip $vcf.recode.vcf
 bcftools annotate --set-id '%CHROM:%POS:%REF:%ALT' $vcf.recode.vcf.gz -O z -o $vcf.recode_anno.vcf.gz
 
+#plink association test
 plink --vcf $vcf.recode_anno.vcf.gz --double-id --make-bed --allow-extra-chr --out $vcf
 cp cw.fam ./$vcf.fam
 plink --bfile $vcf --assoc fisher --double-id --allow-extra-chr --maf 0.15 --geno 0.2 --out $vcf
@@ -24,3 +25,8 @@ plink --allow-extra-chr --vcf $vcf.recode_anno.vcf.gz \
 --out $vcf.thin --export HV
 java -jar ~/scratch/apps/Haploview.jar -memory 5000
 
+#gemma assocation test
+plink --vcf $vcf.recode_anno.vcf.gz --geno 0.1 --thin 0.01 --chr Scaffold_2 --double-id --make-bed --allow-extra-chr --out $vcf.thin.0.01
+gemma -bfile $vcf.thin.0.01 -gk 1 -o $vcf
+cp ./cw.fam $vcf.fam
+gemma -lmm 1 -miss 0.1 -bfile ../HUH_KCG_OCC -k ./output/$vcf.cXX.txt -o $vcf
