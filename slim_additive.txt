@@ -1,17 +1,22 @@
 initialize() {
 initializeMutationRate(0);
+//define mutations m2 and m3, dominant and with fixed fitness effect of zero (fitness defined in generation 1, below)
 initializeMutationType("m2", 1.0, "f", 0); // introduced mutation
 initializeMutationType("m3", 1.0, "f", 0); // introduced mutation
+//keep information on mutations after fixation/loss
 m2.convertToSubstitution = F;
 m3.convertToSubstitution = F;
+#create two linkage groups, g1 and g2, on which m2 and m3 respectively and exclusively occur
 initializeGenomicElementType("g1", m2, c(0,0));
 initializeGenomicElement(g1, 0, 99999);
 initializeGenomicElementType("g2", m3, 1.0);
 initializeGenomicElement(g2, 100000, 199999);
 }
+
+//initialise population of 500 diploid individuals
 1 early() { sim.addSubpop("p1", 500); }
 
-//add mutations
+//in first generation, add mutations to 5 genomes each, at arbitrary but fixed position
 1 late() {
 target = sample(p1.genomes, 5);
 target.addNewDrawnMutation(m2, 10000);
@@ -19,7 +24,9 @@ target = sample(p1.genomes, 5);
 target.addNewDrawnMutation(m3, 189999);
 }
 
-//define fitness of mutations
+//define fitness of mutations in each generation
+//the condition fitness statement is unnecessary here in the additive simulation, but used for consistency
+//m2 always confers a fitness benefit of +0.15 (but only 1 copy considered, i.e., treated as dominant)
 mutationEffect(m2) {
 	fitinc = 0.15;
 	if (individual.genome1.countOfMutationsOfType(m3))
@@ -30,6 +37,7 @@ mutationEffect(m2) {
 		return effect + fitinc;
 }
 
+//m3 fitness benefits are as above
 mutationEffect(m3) {
 	fitinc = 0.15;
 	if (individual.genome1.countOfMutationsOfType(m2))
