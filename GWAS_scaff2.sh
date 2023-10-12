@@ -31,8 +31,14 @@ bcftools merge -r Scaffold_2 -m id ../popgenHUH_scaff2.recode_anno.vcf.gz ../pop
 cat ../popgenHUH_scaff2.fam ../popgenKCG_scaff2.fam ../popgenOCC_scaff2.fam > HUH_KCG_OCC_merged.fam
 
 #gemma assocation test
-plink --vcf HUH_KCG_OCC.vcf.gz --geno 0.1 ---chr Scaffold_2 --maf 0.3 --double-id --make-bed --allow-extra-chr --out $vcf
+plink --vcf HUH_KCG_OCC.vcf.gz --geno 0.1 ---chr Scaffold_2 --maf 0.15 --double-id --make-bed --allow-extra-chr --out $vcf
 gemma -bfile HUH_KCG_OCC -gk 1 -o HUH_KCG_OCC
 cp ./cw.fam HUH_KCG_OCC.fam
 gemma -lmm 1 -miss 0.1 -bfile HUH_KCG_OCC -k ./output/HUH_KCG_OCC.cXX.txt -o $vcf
+
+#PCA
+plink --vcf HUH_KCG_OCC.vcf.gz --double-id --allow-extra-chr \
+--geno 0.2 --maf 0.15 --chr Scaffold_2 --from-mb 7.5 --to-mb 80 \
+--make-bed --pca --out HUH_KCG_OCC
+
 
