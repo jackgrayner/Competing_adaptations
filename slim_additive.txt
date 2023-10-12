@@ -25,7 +25,8 @@ target.addNewDrawnMutation(m3, 189999);
 }
 
 //define fitness of mutations in each generation
-//the condition fitness statement is unnecessary here in the additive simulation, but used for consistency
+//the conditional fitness statement is unnecessary here in the additive simulation, 
+//as mutation fitness effects are fixed, but used anyway for consistency
 //m2 always confers a fitness benefit of +0.15 (but only 1 copy considered, i.e., treated as dominant)
 mutationEffect(m2) {
 	fitinc = 0.15;
