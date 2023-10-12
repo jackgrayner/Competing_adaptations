@@ -13,20 +13,26 @@ bcftools mpileup -Ov -f $ref -d 100000 --annotate FORMAT/AD,FORMAT/DP -b $bamlis
 vcftools --gzvcf $vcf.vcf.gz --maf 0.1 --minDP 5 --maxDP 100 --minQ 20 --minGQ 20 --recode --recode-INFO-all --out $vcf
 bgzip $vcf.recode.vcf
 bcftools annotate --set-id '%CHROM:%POS:%REF:%ALT' $vcf.recode.vcf.gz -O z -o $vcf.recode_anno.vcf.gz
+bcftools index $vcf.recode_anno.vcf.gz
 
 #plink association test
 plink --vcf $vcf.recode_anno.vcf.gz --double-id --make-bed --allow-extra-chr --out $vcf
 cp cw.fam ./$vcf.fam
-plink --bfile $vcf --assoc fisher --double-id --allow-extra-chr --maf 0.15 --geno 0.2 --out $vcf
+plink --bfile $vcf --assoc fisher --double-id --allow-extra-chr --maf 0.1 --geno 0.2 --out $vcf
 
 #LD
 plink --allow-extra-chr --vcf $vcf.recode_anno.vcf.gz \
---chr Scaffold_2 --double-id --remove remove.txt --thin 0.001 --make-bed --snps-only --geno 0.5 --allow-no-sex \
+--chr Scaffold_2 --double-id --remove remove.txt --thin 0.001 --make-bed --snps-only --allow-no-sex \
 --out $vcf.thin --export HV
 java -jar ~/scratch/apps/Haploview.jar -memory 5000
 
+#combined analysis, after running the above for all populations
+bcftools merge -r Scaffold_2 -m id ../popgenHUH_scaff2.recode_anno.vcf.gz ../popgenKCG_scaff2.recode_anno.vcf.gz ../popgenOCC_scaff2.recode_anno.vcf.gz > HUH_KCG_OCC.vcf.gz
+cat ../popgenHUH_scaff2.fam ../popgenKCG_scaff2.fam ../popgenOCC_scaff2.fam > HUH_KCG_OCC_merged.fam
+
 #gemma assocation test
-plink --vcf $vcf.recode_anno.vcf.gz --geno 0.1 --thin 0.01 --chr Scaffold_2 --double-id --make-bed --allow-extra-chr --out $vcf.thin.0.01
-gemma -bfile $vcf.thin.0.01 -gk 1 -o $vcf
-cp ./cw.fam $vcf.fam
-gemma -lmm 1 -miss 0.1 -bfile ../HUH_KCG_OCC -k ./output/$vcf.cXX.txt -o $vcf
+plink --vcf HUH_KCG_OCC.vcf.gz --geno 0.1 ---chr Scaffold_2 --maf 0.3 --double-id --make-bed --allow-extra-chr --out $vcf
+gemma -bfile HUH_KCG_OCC -gk 1 -o HUH_KCG_OCC
+cp ./cw.fam HUH_KCG_OCC.fam
+gemma -lmm 1 -miss 0.1 -bfile HUH_KCG_OCC -k ./output/HUH_KCG_OCC.cXX.txt -o $vcf
+
