@@ -12,7 +12,6 @@ vcf<-vcf[nchar(vcf[,5])==1,]
 sexes<-read.table('plink_correctedsex.fam',h=F)
 males<-which(sexes[,5]=="1")
 
-#tic()
 #loop to remove genotypes for samples with heterozygote genotypes
 for (SNP in c(1:nrow(vcf))){
   #the first 9 columns are not samples
@@ -39,10 +38,6 @@ for (SNP in c(1:nrow(vcf))){
         }
       }
     }
-    #if (grepl("1/0",vcf[SNP,sample])){break}
-  }
-  if (SNP %% 1000==0){
-    print(paste(round(SNP/(nrow(vcf))*100,digits=3),"% done replacing heterozygotes"))
   }
 }
 
