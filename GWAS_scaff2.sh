@@ -15,11 +15,6 @@ bgzip $vcf.recode.vcf
 bcftools annotate --set-id '%CHROM:%POS:%REF:%ALT' $vcf.recode.vcf.gz -O z -o $vcf.recode_anno.vcf.gz
 bcftools index $vcf.recode_anno.vcf.gz
 
-#plink association test
-plink --vcf $vcf.recode_anno.vcf.gz --double-id --make-bed --allow-extra-chr --out $vcf
-cp cw.fam ./$vcf.fam
-plink --bfile $vcf --assoc fisher --double-id --allow-extra-chr --maf 0.1 --geno 0.2 --out $vcf
-
 #LD
 plink --allow-extra-chr --vcf $vcf.recode_anno.vcf.gz \
 --chr Scaffold_2 --double-id --remove remove.txt --thin 0.001 --make-bed --snps-only --allow-no-sex \
