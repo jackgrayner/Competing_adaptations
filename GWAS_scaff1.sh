@@ -26,8 +26,7 @@ plink --allow-extra-chr --vcf $vcf.recode_anno.vcf.gz \
 java -jar ~/scratch/apps/Haploview.jar -memory 5000
 
 #gemma assocation test
-plink --vcf $vcf.recode_anno.vcf.gz --geno 0.1 --thin 0.01 --chr Scaffold_2 --double-id --make-bed --allow-extra-chr --out $vcf.thin.0.01
-gemma -bfile $vcf.thin.0.01 -gk 1 -o $vcf
+gemma -bfile ../HUH_KCG_OCC -gk 1 -o $vcf
 cp ./fw.fam $vcf.fam
 gemma -lmm 1 -miss 0.15 -bfile ../HUH_KCG_OCC -k ./output/$vcf.cXX.txt -o $vcf
 
