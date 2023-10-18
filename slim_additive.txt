@@ -1,5 +1,6 @@
 initialize() {
 initializeMutationRate(0);
+initializeRecombinationRate(0);
 //define mutations m2 and m3, dominant and with fixed fitness effect of zero (fitness defined in generation 1, below)
 initializeMutationType("m2", 1.0, "f", 0); // introduced mutation
 initializeMutationType("m3", 1.0, "f", 0); // introduced mutation
@@ -7,7 +8,7 @@ initializeMutationType("m3", 1.0, "f", 0); // introduced mutation
 m2.convertToSubstitution = F;
 m3.convertToSubstitution = F;
 //create two linkage groups, g1 and g2, on which m2 and m3 respectively and exclusively occur
-initializeGenomicElementType("g1", m2, c(0,0));
+initializeGenomicElementType("g1", m2, 1.0);
 initializeGenomicElement(g1, 0, 99999);
 initializeGenomicElementType("g2", m3, 1.0);
 initializeGenomicElement(g2, 100000, 199999);
