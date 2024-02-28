@@ -42,9 +42,9 @@ mutationEffect(m2) {
 //m3 fitness benefits are as above
 mutationEffect(m3) {
 	fitinc = 0.15;
-	if (individual.genome1.countOfMutationsOfType(m2))
+	if (individual.genome1.countOfMutationsOfType(m3))
 		return effect + fitinc;
-	else if (individual.genome2.countOfMutationsOfType(m2))
+	else if (individual.genome2.countOfMutationsOfType(m3))
 		return effect + fitinc;
 	else
 		return effect + fitinc;
