@@ -9,7 +9,7 @@
 vcf=$1
 ref=~/scratch/Cricket.curated.scaff_v2.fasta
 bamlist=./bamlist.txt
-bcftools mpileup -Ov -f $ref -d 100000 --annotate FORMAT/AD,FORMAT/DP -b $bamlist -r Scaffold_1 | bcftools call -m -v -Ov -f GQ -o $vcf.vcf
+bcftools mpileup -Ov -f $ref -d 100000 --annotate FORMAT/AD,FORMAT/DP -b $bamlist -r Scaffold_1 | bcftools call --ploidy 1 -m -v -Ov -f GQ -o $vcf.vcf
 vcftools --gzvcf $vcf.vcf.gz --maf 0.1 --minDP 5 --maxDP 70 --minQ 20 --minGQ 20 --recode --recode-INFO-all --out $vcf
 bgzip $vcf.recode.vcf
 bcftools annotate --set-id '%CHROM:%POS:%REF:%ALT' $vcf.recode.vcf.gz -O z -o $vcf.recode_anno.vcf.gz
