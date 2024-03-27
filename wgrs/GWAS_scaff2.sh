@@ -29,7 +29,9 @@ cat ../popgenHUH_scaff2.fam ../popgenKCG_scaff2.fam ../popgenOCC_scaff2.fam > HU
 plink --vcf HUH_KCG_OCC.vcf.gz --geno 0.1 ---chr Scaffold_2 --maf 0.15 --double-id --make-bed --allow-extra-chr --out $vcf
 gemma -bfile HUH_KCG_OCC -gk 1 -o HUH_KCG_OCC
 cp ./cw.fam HUH_KCG_OCC.fam
-gemma -lmm 1 -miss 0.1 -bfile HUH_KCG_OCC -k ./output/HUH_KCG_OCC.cXX.txt -o $vcf
+#gemma -lmm 1 -miss 0.1 -bfile HUH_KCG_OCC -k ./output/HUH_KCG_OCC.cXX.txt -o $vcf
+gemma -lm 2 -c Cw_pop_covar.txt -miss 0.1 -bfile HUH_KCG_OCC -o HUH_KCG_OCC
+#this uses likelihood ratio test LM with a covariate of population
 
 #PCA
 plink --vcf HUH_KCG_OCC.vcf.gz --double-id --allow-extra-chr \
