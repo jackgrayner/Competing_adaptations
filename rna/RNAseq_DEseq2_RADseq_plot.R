@@ -45,25 +45,6 @@ dds <- DESeq(DESeqDataSetFromMatrix(countData = cts,
                               colData = pheno,
                               design= ~ Cw + Fw))
 
-##### QC
-vsd<-vst(dds)
-sampleDists <- dist(t(assay(vsd)))
-sampleDistMatrix <- as.matrix(sampleDists)
-rownames(sampleDistMatrix) <- paste(vsd$condition, vsd$type, sep="-")
-colnames(sampleDistMatrix) <- NULL
-colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
-pheatmap(sampleDistMatrix,
-         clustering_distance_rows=sampleDists,
-         clustering_distance_cols=sampleDists,
-         col=colors)
-plotPCA(vsd, intgroup=c("Cw", "Fw"))
-####
-
-#### Remove samples S23 & S24 based on aberrant PCA/sample distance correlations
-dds <- DESeq(DESeqDataSetFromMatrix(countData = cts[,!colnames(cts) %in% c("S23","S24")],
-                              colData = pheno[!rownames(pheno) %in% c("S23","S24"),],
-                              design= ~ Cw + Fw))
-
 res.cw <- results(dds, name="Cw_Wt_vs_Cw",alpha=0.05)
 resOrdered.cw <- res.cw[order(res.cw$pvalue),]
 summary(resOrdered.cw)
