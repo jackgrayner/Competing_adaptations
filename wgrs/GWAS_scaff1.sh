@@ -21,9 +21,6 @@ plink --allow-extra-chr --vcf $vcf.recode_anno.vcf.gz \
 java -jar ~/scratch/apps/Haploview.jar -memory 5000
 
 #gemma assocation test
-gemma -bfile ../HUH_KCG_OCC -gk 1 -o $vcf
 cp ./fw.fam $vcf.fam
-gemma -lmm 1 -miss 0.15 -bfile ../HUH_KCG_OCC -k ./output/$vcf.cXX.txt -o $vcf
+gemma -lm 2 -c covar_file.txt -miss 0.15 -bfile $vcf -o $vcf
 
-#gemma association test without relatedness covariate (Kauai.CG only)
-gemma -lm 1 -miss 0.15 -bfile $vcf -o $vcf
