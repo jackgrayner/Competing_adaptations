@@ -22,5 +22,5 @@ java -jar ~/scratch/apps/Haploview.jar -memory 5000
 
 #gemma assocation test
 cp ./fw.fam $vcf.fam
-gemma -lm 2 -c covar_file.txt -miss 0.15 -bfile $vcf -o $vcf
+gemma -lm 2 -miss 0.15 -bfile $vcf -o $vcf
 
