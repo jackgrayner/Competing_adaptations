@@ -17,7 +17,7 @@ bcftools index $vcf.recode_anno.vcf.gz
 
 #LD
 plink --allow-extra-chr --vcf $vcf.recode_anno.vcf.gz \
---chr Scaffold_2 --double-id --remove remove.txt --thin 0.001 --make-bed --snps-only --allow-no-sex \
+--chr Scaffold_2 --double-id --thin 0.001 --make-bed --snps-only --allow-no-sex \
 --out $vcf.thin --export HV
 java -jar ~/scratch/apps/Haploview.jar -memory 5000
 
