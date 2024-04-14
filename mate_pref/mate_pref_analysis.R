@@ -11,7 +11,7 @@ t$CourtYN<-factor(t$CourtYN)
 levels(t$CourtYN)<-c('NoCourtship','Courtship')
 
 #get rid of trials where crickets did not interact
-t1<-subset(t,DNI!=1)
+t1<-subset(t,didnotinteract!=1)
 #remove repeated trials
 t2<-t1[!duplicated(t1$MaleID),]
 t2<-t2[!duplicated(t2$FemID),]
