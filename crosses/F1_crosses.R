@@ -29,19 +29,26 @@ f1sum<-data.frame(
              Mother.cwyn,Father.cwyn,MotherFw,FatherFw,density) %>%
     summarise(meancw.yn=mean(f1.cwyn,na.rm=TRUE),meanCw=mean(F1Cw,na.rm=TRUE), n = n()))
 
-glm.cw.bin<-lmer(meancw.yn~F1Sex+density+(1|grp/Father/Mother),data=f1sum)
+glm.cw.bin<-lmer(meancw.yn~1+(1|Father/Mother),data=f1sum)
 Anova(glm.cw.bin)
 r.squaredGLMM(glm.cw.bin)
 qqnorm(resid(glm.cw.bin))
 qqline(resid(glm.cw.bin))
 plot(glm.cw.bin)
 
-glm.cw.lin<-lmer(meanCw~F1Sex+density+(1|grp/Father/Mother),data=f1sum)
+glm.cw.lin<-lmer(meanCw~1+(1|Father/Mother),data=f1sum)
 Anova(glm.cw.lin)
 r.squaredGLMM(glm.cw.lin)
 qqnorm(resid(glm.cw.lin))
 qqline(resid(glm.cw.lin))
 plot(glm.cw.lin)
+
+glm.cw.bin.int<-lmer(meancw.yn~F1Sex+density+FatherCw*MotherCw+(1|Father/Mother),data=f1sum)
+Anova(glm.cw.bin.int,type="III")
+r.squaredGLMM(glm.cw.bin.int)
+qqnorm(resid(glm.cw.bin.int))
+qqline(resid(glm.cw.bin.int))
+plot(glm.cw.bin.int)
 
 ggplot(f1sum,aes(x=Father,y=meancw.yn,fill=F1Sex))+
   geom_point(shape=21)+facet_grid(F1Sex~grp,scales='free_x')+
