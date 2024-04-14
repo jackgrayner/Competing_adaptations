@@ -1,0 +1,95 @@
+// this simulates the 'additive scenario'
+// for non-additive scenario, replace fitinccomb with 0.14 (sqrt(1.3))
+// for negative scenario, replace fitinccomb with 0.1095 (sqrt(1.2))
+// for single mutation scenario, remove lines 37/39 accordingly
+// for autosomal scenario, remove 'modifychild' section, and ref to genome1 on line 52
+
+initialize() {
+	initializeMutationRate(0);
+	initializeMutationType("m1", 1.0, "f", 0.0);// auto
+	initializeMutationType("m2", 1.0, "f", 0.0);// X marker
+	initializeMutationType("m3", 1.0, "f", 0.0);// Y marker
+	initializeMutationType("m4", 0.5, "f", 0.0);// adaptive auto, here m4 has dominance coefficient 0.5
+	initializeMutationType("m5", 1.0, "f", 0.0);// adaptive X
+	m4.convertToSubstitution = F;
+	m5.convertToSubstitution = F;
+	initializeGenomicElementType("g1", m1, 1.0); 
+	initializeGenomicElementType("g2", m2, 1.0);
+	initializeGenomicElement(g1, 0, 99999);	//this is the 'autosomal' genomic element  
+	initializeGenomicElement(g2, 100000, 199999);	//this is the 'X-linked' genomic element 
+	initializeSex("A");  // turn on sex and model autosomes
+	rates = c(0, 0.5, 0); ends = c(99999, 100000, 199999);
+	initializeRecombinationRate(rates, ends); //force random segregation of g1 and g2
+}
+
+1 late() { // initialize the pop, with a Y marker for each male 
+	sim.addSubpop("p1", 500);
+	i = p1.individuals;
+	//add X marker (m2) to females (genome1 and genome2) and males (genome1 only)
+	//and add Y marker (m3) to male genome2 only
+	i[i.sex == "M"].genome2.addNewMutation(m3, 0.0, 199999);
+	i[i.sex == "F"].genome1.addNewMutation(m2, 0.0, 199999);
+	mut = sim.mutationsOfType(m2);
+	i[i.sex == "F"].genome2.addMutations(mut);
+	i[i.sex == "M"].genome1.addMutations(mut);
+	
+	//now add adaptive mutations to random sample of 5 male genomes
+	target = sample(i[i.sex=="M"].genome1, 5);
+	target.addNewDrawnMutation(m4, 10000);
+	target1 = sample(i[i.sex=="M"].genome1, 5);
+	target1.addNewDrawnMutation(m5, 189999);
+}
+
+
+//define fitness of mutations
+mutationEffect(m4) {//auto 
+	//m4 is autosomal. if m4 is present on its own, it has a fitness benefit of 0.3 (fitincabs)
+	//this is the additive scenario -- so if m4 is present in the genome of a male who also carries 
+	//m5 (x-linked mutation) on genome1 then the two mutations each confer a fitness benefit of 
+	//0.265 (fitinccomb) as (1+0.265)^2=1.6
+	fitincabs = 0.3;
+	fitinccomb = 0.265;
+	if (individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M")//m5 only matters if it's on genome1
+		return effect + mut.mutationType.dominanceCoeff*fitinccomb;
+	else if (individual.sex == "M")
+		return effect + mut.mutationType.dominanceCoeff*fitincabs;
+	else //both mutations only benefit males
+		return effect;
+}
+
+
+mutationEffect(m5) {//X-linked
+	//m5 is x-linked. so only maternal (genome1) copy matters in males
+	fitincabs = 0.3;
+	fitinccomb = 0.265;
+	if (individual.countOfMutationsOfType(m4) & individual.sex == "M")
+		return effect + mut.mutationType.dominanceCoeff*fitinccomb;
+	else if (individual.sex == "M")
+		return effect + mut.mutationType.dominanceCoeff*fitincabs;
+	else 
+		return effect;
+}
+
+
+modifyChild() {
+	//this is based on the SLiM manual, and is explicitly inefficient, but intuitive
+	//there is also clearly some redundancy here
+	numX = sum(child.genomes.containsMarkerMutation(m2, 199999)); // record num of m2 (X marker)
+	numY = sum(child.genomes.containsMarkerMutation(m3, 199999)); // record num of m3 (Y marker)
+	numCw = sum(child.genomes.containsMarkerMutation(m4, 10000)); //record num of m4 (autosomal adaptive)
+	numFw = sum(child.genomes.containsMarkerMutation(m5, 189999)); // record num of m5 (X-linked adaptive)
+	numFwg2 = sum(child.genome2.containsMarkerMutation(m5, 189999)); // record num of m5  on g2
+	if (child.sex == "M" & numFwg2>1 ) return F;//Fw should never be on male genome2
+	if (child.sex == "M" & numFw > 1) return F; //no male should have 2 Fw
+	if (child.sex == "M" & numY > 1) return F; //
+	if (numY > 1) stop("### ERROR: too many Ys"); // females should have 0 Y's 
+	if (child.sex == "F" & numY > 0) return F; // males should have 1 Y 
+	if (child.sex == "M" & numY == 0) return F; //males should have 1 Y
+	if (child.sex == "F" & numX < 2) return F; // females should have 2 X 
+	return T;
+}
+
+
+100 late(){
+sim.simulationFinished();
+}
