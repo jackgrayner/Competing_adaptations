@@ -79,7 +79,7 @@ modifyChild() {
 	numCw = sum(child.genomes.containsMarkerMutation(m4, 10000)); //record num of m4 (autosomal adaptive)
 	numFw = sum(child.genomes.containsMarkerMutation(m5, 189999)); // record num of m5 (X-linked adaptive)
 	numFwg2 = sum(child.genome2.containsMarkerMutation(m5, 189999)); // record num of m5  on g2
-	if (child.sex == "M" & numFwg2>1 ) return F;//Fw should never be on male genome2
+	if (child.sex == "M" & numFwg2 > 0 ) return F;//Fw should never be on male genome2
 	if (child.sex == "M" & numFw > 1) return F; //no male should have 2 Fw
 	if (child.sex == "M" & numY > 1) return F; //
 	if (numY > 1) stop("### ERROR: too many Ys"); // females should have 0 Y's 
