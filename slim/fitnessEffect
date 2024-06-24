@@ -39,13 +39,13 @@ fitnessEffect(){
 
 	//below are parameters for 'additive' simulation, in which mutations combine to confer greater fitness
 	//in the non-additive simulation, fullcomb=1.3, and heterozygouscomb=1.3. the rest is the same
+	
 	fullcomb=1.6;//fitness of inidividual if autosomal mutation is homozygous and X-linked mutation also present
 	heterozygouscomb=1.3+(0.3*dominancecoef);//fitness of inidividual if autosomal mutation is heterozygous and x-linked mutation also present
 	fullsingle=1.3;//fitness of inidividual if only the x-linked mutation is present, OR if only the autosomal mutation is present and homozygous
 	heterozygousauto=1+(0.3*dominancecoef);//fitness of individual if only the autosomal mutation is present, but heterozygous
 	
-	//additive scenario with h=0.5
-	if (individual.genome1.countOfMutationsOfType(m4) & individual.genome2.countOfMutationsOfType(m4)	& individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M")
+	if (individual.genome1.countOfMutationsOfType(m4) & individual.genome2.countOfMutationsOfType(m4) & individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M")
 		return fullcomb;//if homozygous Cw, and Fw is on X, full summed fitness benefit
 	else if (individual.countOfMutationsOfType(m4)  & individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M") 
 		return heterozygouscomb;//if heterozygous Cw, and Fw is on X, full benefit of Fw, half benefit of Cw
