@@ -16,7 +16,7 @@ initialize() {
 	initializeMutationType("m3", 1.0, "f", 0.0);// Y marker
 	initializeMutationType("m4", 1.0, "f", 0.0);// adaptive auto (Cw)
 	initializeMutationType("m5", 1.0, "f", 0.0);// adaptive X (Fw)
-	m4.convertToSubstitution = F;
+	m4.convertToSubstitution = F;//prevent conversion as this will remove epistatic effects once either is fixed
 	m5.convertToSubstitution = F;
 	initializeGenomicElementType("g1", m1, 1.0);     // PAR: m1 only 
 	initializeGenomicElementType("g2", m2, 1.0); // non-PAR: m2 only //
