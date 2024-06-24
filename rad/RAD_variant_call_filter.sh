@@ -31,6 +31,7 @@ source activate python2
 python allelicBalance.py -i polarised.$VCF1.depthfilt.vcf -hom -o polarised.$VCF1.depthfilt.vcf1
 mv polarised.$VCF1.depthfilt.vcf1 ./polarised.$VCF1.depthfilt.vcf
 
+#make bed and run fisher's exact tests
 plink --vcf polarised.$VCF1.depthfilt.vcf --make-bed --allow-extra-chr --out $VCF.final 
 cp plink_correctedsex.fam ./$VCF.final.fam
 plink --bfile $VCF.final --mind 0.6 --geno 0.3 --assoc fisher --allow-extra-chr --adjust --out CwPop_gwas 
