@@ -40,35 +40,40 @@ initialize() {
 }
 
 
+
 //define fitness of mutations
-mutationEffect(m4) {//auto 
-	//m4 is autosomal. if m4 is present on its own, it has a fitness benefit of 0.3 (fitincabs)
-	//this is the additive scenario -- so if m4 is present in the genome of a male who also carries 
-	//m5 (x-linked mutation) on genome1 then the two mutations each confer a fitness benefit of 
-	//0.265 (fitinccomb) as (1+0.265)^2=1.6
-	fitincabs = 0.3;
-	fitinccomb = 0.265;
-	if (individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M")//m5 only matters if it's on genome1
-		return effect + mut.mutationType.dominanceCoeff*fitinccomb;
+mutationEffect(m4) {//auto (Cw)
+	
+	domcoeff=0.75;//dominance coefficient
+	fitincabs = 0.3;//fit benefit when m5 is absent
+	fitinccomb = 0.3;//fit benefit when m5 is present
+	
+	if (individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M")
+			return 1.0 + fitinccomb;
 	else if (individual.sex == "M")
-		return effect + mut.mutationType.dominanceCoeff*fitincabs;
-	else //both mutations only benefit males
-		return effect;
+		if (homozygous)
+			return 1.0 + fitincabs;
+		else
+			return 1.0 + fitincabs*domcoeff;
+	else
+		return 1.0;
 }
 
+//even with no fitness benefit m3 spreads to fixation - why??
 
-mutationEffect(m5) {//X-linked
-	//m5 is x-linked, but it doesn't matter which chr m4 is on
-	fitincabs = 0.3;
-	fitinccomb = 0.265;
+mutationEffect(m5) {//X (Fw)
+	//m5 is x-linked. so only the maternal (genome1) copy provides fitness benefits to males
+	fitincabs = 0.3;//fit benefit when m4 absent
+	fitinccomb = 0.3;//fit benefit when m5 present
+	//no dominance coefficient as can only be hemizygous
 	if (individual.countOfMutationsOfType(m4) & individual.sex == "M")
-		return effect + mut.mutationType.dominanceCoeff*fitinccomb;
+		return 1.0 + fitinccomb;
+	//genome2 is ignored because it's inherited from male parent
 	else if (individual.sex == "M")
-		return effect + mut.mutationType.dominanceCoeff*fitincabs;
-	else 
-		return effect;
+		return 1.0 + fitincabs;
+	else
+		return 1.0;
 }
-
 
 modifyChild() {
 	//this is based on the SLiM manual, and is explicitly inefficient, but intuitive
