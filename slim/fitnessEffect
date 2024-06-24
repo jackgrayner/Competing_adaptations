@@ -34,6 +34,7 @@ initialize() {
 ////THIS IS THE START OF THE IMPORTANT BIT
 
 //alternative approach using fitnessEffect
+//fitnessEffect defines the fitness of individuals in the population, given a series of parameters (here, based on mutations m4 and m5)
 fitnessEffect(){
 	dominancecoef=0.5;//this will be run with h=0.5, h=0.75, and h=1
 
