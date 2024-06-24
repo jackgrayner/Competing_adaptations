@@ -36,4 +36,5 @@ plink --vcf HUH_KCG_OCC.vcf.gz --double-id --allow-extra-chr \
 --geno 0.2 --maf 0.15 --chr Scaffold_2 --from-mb 7.5 --to-mb 80 \
 --make-bed --pca --out HUH_KCG_OCC
 
-
+#stacks was used to plot heterozygosity, where popmap is a tsv listing sample IDs and haplotype based on Fig. 3A (see PCA plot script)
+populations -V ./$vcf.recode_anno.vcf.gz -O ./ -R 0.5 -M $popmap
