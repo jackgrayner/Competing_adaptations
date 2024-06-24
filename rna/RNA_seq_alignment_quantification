@@ -16,5 +16,5 @@ stringtie --merge -p 8 -G ~/scratch/Official.Cricket_v2.curated.geneset.gff -o s
 stringtie -e -B -p 4 -G stringtie_merged.gtf -o ballgown/$1/$1.gtf $1.bam
 
 #prepDE (produce gene count matrix)
-python prepDE.py -i ./ballgown/ -l 150 -c -g gene_cluster_count.csv
+python prepDE.py -i ./ballgown/ -l 150 -g gene_count_matrix.csv
 
