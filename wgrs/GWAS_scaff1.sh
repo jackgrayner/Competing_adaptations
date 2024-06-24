@@ -6,9 +6,9 @@
 #SBATCH --nodes=1
 #SBATCH --partition=long
 #SBATCH --output=bcftools_call.out
-vcf=$1
+vcf=$1#provide name of vcf
 ref=~/scratch/Cricket.curated.scaff_v2.fasta
-bamlist=./bamlist.txt
+bamlist=./bamlist.txt#list of bam files
 bcftools mpileup -Ov -f $ref -d 100000 --annotate FORMAT/AD,FORMAT/DP -b $bamlist -r Scaffold_1 | bcftools call --ploidy 1 -m -v -Oz -f GQ -o $vcf.vcf.gz
 vcftools --gzvcf $vcf.vcf.gz --maf 0.1 --minDP 5 --maxDP 70 --minQ 20 --minGQ 20 --recode --recode-INFO-all --out $vcf
 bgzip $vcf.recode.vcf
