@@ -44,7 +44,7 @@ initialize() {
 
 //fitnessEffect callbacks
 fitnessEffect(){
-	dominancecoef=1.0;
+	dominancecoef=0.75;
 
 	fullcomb=1.6;//fitness of inidividual if autosomal mutation is homozygous and X-linked mutation also present
 	heterozygouscomb=1.3+(0.3*dominancecoef);//fitness of inidividual if autosomal mutation is heterozygous and x-linked mutation also present
