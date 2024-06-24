@@ -86,6 +86,10 @@ modifyChild() {
 	return T;
 }
 
+100 late(){
+sim.simulationFinished();
+}
+
 
 //mutationEffect code
 ////define fitness of mutations
