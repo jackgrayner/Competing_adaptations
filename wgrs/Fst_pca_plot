@@ -1,0 +1,66 @@
+#vcftools --gzvcf HUH_KCG_OCC.vcf.gz
+#	--chr Scaffold_2
+#	--fst-window-size 10000
+#	--fst-window-step 10000
+#	--weir-fst-pop HUH_inv.txt
+#	--weir-fst-pop KCG_inv.txt
+#	--keep HUH_inv.txt
+#	--keep KCG_inv.txt
+#	--out HUHinv_KCG_inv.FST
+
+
+fst<-read.table("./HUHinv_KCG_inv.FST.windowed.weir.fst",h=T)
+serps<-read.table("./serpins.txt",h=T)
+serps.2<-serps[serps$scaffold=="Scaffold_2",]
+
+fst$outlier<-"N"
+fst[fst$WEIGHTED_FST>quantile(fst$WEIGHTED_FST,(99.9/100)),]$outlier<-"Y"
+fst[fst$WEIGHTED_FST<0,]$WEIGHTED_FST<-0
+g.fst<-ggplot(fst,aes(x=BIN_START/1e+06,y=WEIGHTED_FST))+
+  geom_rect(xmin=7.5,xmax=80,ymin=(-0.1),ymax=1.2,fill='#def2c7',alpha=0.3,colour='white')+
+  geom_rug(data=serps.2[serps.2$start<100e+06,],aes(x=start/1e+06),inherit.aes=FALSE,colour='black',sides='top')+
+  geom_point(alpha=0.5,size=1,colour='#555555')+theme_bw()+theme(panel.grid=element_blank())+
+  geom_smooth(method="loess",span=0.1,se=TRUE,colour='darkred',size=0.75)+
+  ylim(c(0,1))+scale_x_continuous(breaks=seq(0,100,10),limits=c(0,100))+
+  xlab("Window start (Mb)")+ylab("Weighted FST")
+
+ggsave('/HUH_KCG.fst.png',plot=g.fst,dpi=600,height=2.75,width=6)
+
+#PCA
+library(tidyr)
+library(tidyverse)
+library(ggbeeswarm)
+pca <- read_table2("HUH_KCG_OCC.eigenvec", col_names = FALSE)
+eigenval <- scan("HUH_KCG_OCC.eigenval")
+
+pve <- data.frame(PC = 1:20, pve = eigenval/sum(eigenval)*100)
+
+pca <- pca[,-1]
+names(pca)[1] <- "ind"
+names(pca)[2:ncol(pca)] <- paste0("PC", 1:(ncol(pca)-1))
+
+#get phenotype info (Wt/Cw)
+pca$labs<-read.table('/Users/jack/Desktop/PD/Cw crosses/wgrs/mar_24/HUH_KCG_OCC_Cw_fam.txt')[,6]
+pca$labs<-factor(pca$labs)
+
+pca$labs<-factor(pca$labs)
+levels(pca$labs)<-c("Wt","Cw")
+pca$pop<-c(rep("Hawaii.UH",30),rep("Kauai.CG",30),rep("Oahu.CC",30))
+
+#find 'homozygous inverted' samples from H.UH and K.CG pops
+write.table(file='HUH_inv.txt',pca[pca$PC1>0.1 & pca$pop=="Hawaii.UH",]$ind,row.names=FALSE,col.names=FALSE,quote=FALSE)
+write.table(file='KCG_inv.txt',pca[pca$PC1>0.1 & pca$pop=="Kauai.CG",]$ind,row.names=FALSE,col.names=FALSE,quote=FALSE)
+
+library(ggridges)
+pops.pc1<-ggplot(pca, aes(x=PC1, y=pop,fill=labs))+
+  scale_fill_manual(values=c('#C06C84','#355C7D'))+
+  geom_density_ridges(alpha=0.5,scale=0.7,
+                      point_size = 1, point_alpha = 1,aes(point_colour=labs),
+                      jittered_points = TRUE,colour='white',size=0)+theme_minimal()+
+  theme(panel.grid=element_blank(),axis.title.y=element_blank(),
+        legend.title=element_blank(),legend.position='left')+
+  scale_colour_manual(values=c('#C06C84','#355C7D'))+
+  theme(plot.margin=margin(c(5.5,50,5.5,0),'points'))+
+  xlab(paste0("PC1 (", signif(pve$pve[1], 3), "%)"))+
+  scale_discrete_manual("point_colour",values=c('#C06C84','#355C7D'))
+pops.pc1
