@@ -17,4 +17,4 @@ Shell and R code used to align fastq.gz files to the T. oceanicus genome v2; pro
 Slim code used to investigate whether or under what conditions the co-occurrence of similarly adaptive mutations might impede their spread
 
 **WGRS:** 
-Shell code used to align fastq.gz files to the T. oceanicus genome v2 (Zhang et al. 2024, Nat. Comm.); process BAM files and call SNPs in bcftools, followed by filtering; and perform association tests for Cw and Fw phenotypes. 
+Shell code used to align fastq.gz files to the T. oceanicus genome v2 (Zhang et al. 2024, Nat. Comm.); process BAM files and identify/call SNPs in bcftools, followed by filtering; and perform association tests for Cw and Fw phenotypes. 
