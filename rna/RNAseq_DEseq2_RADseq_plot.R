@@ -8,7 +8,7 @@ library(stringr)
 ###READ IN RAD DATA
 datx<-read.table('CwPop_gwas.assoc.fisher',h=T)
 datx$CHR<-sub("Scaffold_","",datx$CHR)
-datx<-datx[datx$CHR<15,]
+datx<-datx[as.integer(datx$CHR)<15,]
 datx[datx$CHR=="1",]$CHR<-"1 (X)"
 datx$CHR<-factor(datx$CHR,levels=c("1 (X)","2","3","4","5","6",
                                    "7","8","9","10","11","12",
