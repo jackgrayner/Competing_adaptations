@@ -92,8 +92,8 @@ modifyChild() {
 	if (child.sex == "F" & numY > 0) return F; // males should have 1 Y 
 	if (child.sex == "M" & numY == 0) return F;
 	if (child.sex == "F" & numX < 2) return F; // females should have 2 X 
-	if (child.sex == "M" & numY > 1)
-		return F;
+	if (child.sex == "M" & numY > 1) return F;
+
 	return T;
 }
 
