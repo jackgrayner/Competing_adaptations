@@ -1,15 +1,15 @@
 Fitness values should be changed per scenario as follows:
-- additive fitness benefits:
-	- fullcomb=1.6
-	- heterozygouscomb=1.3+(0.3*dominancecoef)
+- additive fitness benefits (i.e., individuals expressing both have greater fitness):
+	 - fullcomb=1.6
+	 - heterozygouscomb=1.3+(0.3*dominancecoef)
 	 - fullsingle=1.3
 	 - heterozygousauto=1.0+(0.3*dominancecoef)
-- non-additive fitness benefits:
+- non-additive fitness benefits (i.e., individuals expressing both have no additional fitness benefit vs. those expressing one):
 	 - fullcomb=1.3
 	 - heterozygouscomb=1.3
 	 - fullsingle=1.3
 	 - heterozygousauto=1.0+(0.3*dominancecoef)
-- negative fitness benefits:
+- negative fitness benefits (i.e., individuals carrying both have reduced fitness vs. those expressing one):
 	 - fullcomb=1.2
 	 - heterozygouscomb=1.3-(0.1*dominancecoef)
 	 - fullsingle=1.3
