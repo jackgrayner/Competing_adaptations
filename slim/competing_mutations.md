@@ -1,4 +1,4 @@
-Fitness values should be changed per scenario as follows:
+Fitness values should be changed per scenario as follows. Both mutations only have fitness effects in males, so the dominance coefficient does not apply to the X-linked mutation which is always expressed.
 - additive fitness benefits (i.e., individuals expressing both have greater fitness):
 	 - fullcomb=1.6; where both mutations are fully expressed
 	 - heterozygouscomb=1.3+(0.3*dominancecoef); where autosomal mutation is heterozygous, co-expressed with the X-linked mutation
