@@ -1,14 +1,25 @@
-//change dominance coefficient using dominancecoef on line 47
-//note: I am now using the fitnessEffect callback as it is more intuitive. I got essentially identical results 
-//using mutationEffect callbacks for each mutation separately, which are commented out at the end of the script, 
-//and can be substituted for the fitnessEffect callbacks.
+Fitness values should be changed per scenario as follows:
+- additive fitness benefits:
+	- fullcomb=1.6
+	- heterozygouscomb=1.3+(0.3*dominancecoef)
+	 - fullsingle=1.3
+	 - heterozygousauto=1.0+(0.3*dominancecoef)
+- non-additive fitness benefits:
+	 - fullcomb=1.3
+	 - heterozygouscomb=1.3
+	 - fullsingle=1.3
+	 - heterozygousauto=1.0+(0.3*dominancecoef)
+- negative fitness benefits:
+	 - fullcomb=1.2
+	 - heterozygouscomb=1.3-(0.1*dominancecoef)
+	 - fullsingle=1.3
+	 - heterozygousauto=1.0+(0.3*dominancecoef)
+- for single-mutation sims just comment out lines 39 & 40 or 41 & 42, respectively, and use:
+	- fullsingle=1.3
+ 	- heterozygousauto=1.0+(0.3*dominancecoef)
 
-//fitness values should be changed per scenario as follows:
-//additive fitness benefits: fullcomb=1.6; heterozygouscomb=1.3+(0.3*dominancecoef);fullsingle=1.3;heterozygousauto=1.0+(0.3*dominancecoef)
-//non-additive fitness benefits: fullcomb=1.3; heterozygouscomb=1.3;fullsingle=1.3;heterozygousauto=1.0+(0.3*dominancecoef)
-//negative fitness benefits: fullcomb=1.2; heterozygouscomb=1.3-(0.1*dominancecoef);fullsingle=1.3;heterozygousauto=1.0+(0.3*dominancecoef)
-//for single-mutation sims just comment out lines 39 & 40 or 41 & 42, respectively, and use fullsingle=1.3;heterozygousauto=1.0+(0.3*dominancecoef)
-
+To treat both mutations as autosomal, remove the modifyChild callback.
+```
 initialize() {
 	initializeMutationRate(0);
 	initializeMutationType("m1", 1.0, "f", 0.0);// auto
@@ -89,40 +100,42 @@ modifyChild() {
 sim.simulationFinished();
 outputFull();
 }
-
-
-//mutationEffect code
-////define fitness of mutations
-//mutationEffect(m4) {//auto mutation
-//	
-//	domcoeff=0.75;//dominance coefficient
-//	fitincabs = 0.3;//fit benefit when m5 is absent (this is 0.3 in all scenarios)
-//	fitinccomb = 0.265;//fit benefit when m5 is present (this is 0.14 in non-additive scenario, 0.095 in negative scenario)
-//	
-//	if (individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M")
-//		 if (homozygous) //in non-additive scenario, comment out homozygous if statement
-//			return 1.0 + fitinccomb;//if m4 homozygous, full combined fitness benefit
-//		else//in non-additive scenario, ignore m4 heterozygosity here
-//			return 1.0 + fitinccomb*domcoeff;//if m4 is heterozygous, multiply by dominance coefficient
-//	else if (individual.sex == "M")
-//		if (homozygous)
-//			return 1.0 + fitincabs;//if m4 homozygous, full individual fitness benefit
-//		else
-//			return 1.0 + fitincabs*domcoeff;//if m4 is heterozygous, multiply by dominance coefficient
-//	else
-//		return 1.0;
-//}
-//mutationEffect(m5) {//X mutation
-//	//m5 is x-linked. so only the maternal (genome1) copy provides fitness benefits to males
-//	domcoeff=0.75;//dominance coefficient	
-//	fitincabs = 0.3;//fit benefit when m4 absent
-//	fitinccomb = 0.265;//fit benefit when m5 present
-//	// dominance coefficient does not apply to m5 as can only be hemizygous
-//	if (individual.countOfMutationsOfType(m4) & individual.sex == "M")
-//			return 1.0 + fitinccomb;//if m4 present, combined fitness benefit
-//	//genome2 is ignored because it's inherited from male parent
-//	else if (individual.sex == "M")
-//		return 1.0 + fitincabs;
-//	else
-//		return 1.0;
-//}
+```
+I got essentially identical results using mutationEffect callbacks for each mutation separately -- see below. This can be substituted for the fitnessEffect callback above.
+```
+mutationEffect code
+define fitness of mutations
+mutationEffect(m4) {auto mutation
+	
+	domcoeff=0.75;dominance coefficient
+	fitincabs = 0.3;fit benefit when m5 is absent (this is 0.3 in all scenarios)
+	fitinccomb = 0.265;fit benefit when m5 is present (this is 0.14 in non-additive scenario, 0.095 in negative scenario)
+	
+	if (individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M")
+		 if (homozygous) in non-additive scenario, comment out homozygous if statement
+			return 1.0 + fitinccomb;if m4 homozygous, full combined fitness benefit
+		elsein non-additive scenario, ignore m4 heterozygosity here
+			return 1.0 + fitinccomb*domcoeff;if m4 is heterozygous, multiply by dominance coefficient
+	else if (individual.sex == "M")
+		if (homozygous)
+			return 1.0 + fitincabs;if m4 homozygous, full individual fitness benefit
+		else
+			return 1.0 + fitincabs*domcoeff;if m4 is heterozygous, multiply by dominance coefficient
+	else
+		return 1.0;
+}
+mutationEffect(m5) {X mutation
+	m5 is x-linked. so only the maternal (genome1) copy provides fitness benefits to males
+	domcoeff=0.75;dominance coefficient	
+	fitincabs = 0.3;fit benefit when m4 absent
+	fitinccomb = 0.265;fit benefit when m5 present
+	 dominance coefficient does not apply to m5 as can only be hemizygous
+	if (individual.countOfMutationsOfType(m4) & individual.sex == "M")
+			return 1.0 + fitinccomb;if m4 present, combined fitness benefit
+	genome2 is ignored because it's inherited from male parent
+	else if (individual.sex == "M")
+		return 1.0 + fitincabs;
+	else
+		return 1.0;
+}
+``
