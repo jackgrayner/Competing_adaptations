@@ -1,9 +1,9 @@
 Fitness values should be changed per scenario as follows:
 - additive fitness benefits (i.e., individuals expressing both have greater fitness):
-	 - fullcomb=1.6
-	 - heterozygouscomb=1.3+(0.3*dominancecoef)
-	 - fullsingle=1.3
-	 - heterozygousauto=1.0+(0.3*dominancecoef)
+	 - fullcomb=1.6; where both mutations are full expressed
+	 - heterozygouscomb=1.3+(0.3*dominancecoef); where autosomal mutation is heterozygous, co-expressed with the X-linked mutation
+	 - fullsingle=1.3; where a single mutation is fully expressed
+	 - heterozygousauto=1.0+(0.3*dominancecoef); where autosomal mutation is heterozygous, and X-linked mutation absent
 - non-additive fitness benefits (i.e., individuals expressing both have no additional fitness benefit vs. those expressing one):
 	 - fullcomb=1.3
 	 - heterozygouscomb=1.3
