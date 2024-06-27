@@ -19,3 +19,41 @@ java -jar ~/scratch/apps/Haploview.jar -memory 5000
 cp ./fw.fam $vcf.fam
 gemma -lm 2 -miss 0.15 -bfile $vcf -o $vcf
 ```
+
+```R
+kcg.fw<-read.table('popgenKCG_X.assoc.assoc.txt',h=T)
+kcg.fw<-kcg.fw[nchar(kcg.fw$allele1)==1 & nchar(kcg.fw$allele0)==1,]
+kcg.fw<-kcg.fw[kcg.fw$af>0.2,]
+kcg.fw$Padj<-p.adjust(kcg.fw$p_lrt,method="BH")
+kcg.fw$outlier<-"N"
+kcg.fw[kcg.fw$Padj<quantile(kcg.fw$Padj,0.001),]$outlier<-"Y"
+
+#add extra DPs for KCG plot
+scaleFUN <- function(x) sprintf("%.2f", x)
+
+gwas.fw.kcg<-ggplot(kcg.fw,aes(x=ps/1e+06,y=-log10(p_lrt),colour=sig))+
+	geom_rect(xmin=95.7,xmax=253.2 ,ymin=(-1),ymax=12,fill='#e9f5dc',alpha=0.3,colour='white')+
+	geom_vline(xintercept=259.2,colour='orange',size=1,alpha=1.5)+
+	geom_point(size=0.7,alpha=0.5)+theme_bw()+
+	scale_colour_manual(values=c('#666666','#b0473f'))+
+	theme(legend.position='none',panel.grid=element_blank())+
+	scale_x_continuous(breaks=seq(0,350,by=20))+
+	xlab('ChrX pos. (MB)')+ylab('-log10(P)')+scale_y_continuous(labels=scaleFUN)
+
+occ.fw<-read.table('popgenOCC_X.assoc.assoc.txt',h=T)
+occ.fw<-occ.fw[nchar(occ.fw$allele1)==1 & nchar(occ.fw$allele0)==1,]
+occ.fw<-occ.fw[occ.fw$af>0.2,]
+occ.fw$Padj<-p.adjust(occ.fw$p_lrt,method="BH")
+occ.fw$outlier<-"N"
+occ.fw[occ.fw$Padj<quantile(occ.fw$Padj,0.001),]$outlier<-"Y"
+
+gwas.fw.occ<-ggplot(occ.fw,aes(x=ps/1e+06,y=-log10(p_lrt),colour=sig))+
+	geom_rect(xmin=95.7,xmax=253.2 ,ymin=(-1),ymax=12,fill='#e9f5dc',alpha=0.3,colour='white')+
+	geom_vline(xintercept=259.2,colour='orange',size=1,alpha=1.5)+
+	geom_point(size=0.7,alpha=0.5)+theme_bw()+
+	scale_colour_manual(values=c('#666666','#b0473f'))+
+	theme(legend.position='none',panel.grid=element_blank())+
+	scale_x_continuous(breaks=seq(0,350,by=20))+
+	xlab('ChrX pos. (MB)')+ylab('-log10(P)')
+
+```
