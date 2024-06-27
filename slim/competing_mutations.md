@@ -62,16 +62,17 @@ fitnessEffect(){
 	fullsingle=1.3;//fitness of inidividual if only the x-linked mutation is present, OR if only the autosomal mutation is present and homozygous
 	heterozygousauto=1.0+(0.3*dominancecoef);//fitness of individual if only the autosomal mutation is present, but heterozygous
 	
-	if (individual.genome1.countOfMutationsOfType(m4) & individual.genome2.countOfMutationsOfType(m4) & individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M")
-		return fullcomb;//if homozygous Cw, and Fw is on X, full summed fitness benefit
-	else if (individual.countOfMutationsOfType(m4)  & individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M") 
-		return heterozygouscomb;//if heterozygous Cw, and Fw is on X, full benefit of Fw, half benefit of Cw
-	else if (individual.genome1.countOfMutationsOfType(m5)  & individual.sex == "M")
-		return fullsingle;//if Fw is on X, full Fw benefit
-	else if (individual.genome1.countOfMutationsOfType(m4) & individual.genome2.countOfMutationsOfType(m4)  & individual.sex == "M")
-		return fullsingle;//if Cw is homozygous, full Cw benefit
-	else if (individual.countOfMutationsOfType(m4)  & individual.sex == "M")
-		return heterozygousauto;//if Cw is heterozygous, half Cw benefit
+	if (individual.sex == "M")
+		if (individual.genome1.countOfMutationsOfType(m4) & individual.genome2.countOfMutationsOfType(m4) & individual.genome1.countOfMutationsOfType(m5))
+			return fullcomb;//if homozygous Cw, and Fw is on X, full summed fitness benefit
+		else if (individual.countOfMutationsOfType(m4)  & individual.genome1.countOfMutationsOfType(m5)) 
+			return heterozygouscomb;//if heterozygous Cw, and Fw is on X, full benefit of Fw, half benefit of Cw
+		else if (individual.genome1.countOfMutationsOfType(m5))
+			return fullsingle;//if Fw is on X, full Fw benefit
+		else if (individual.genome1.countOfMutationsOfType(m4) & individual.genome2.countOfMutationsOfType(m4))
+			return fullsingle;//if Cw is homozygous, full Cw benefit
+		else if (individual.countOfMutationsOfType(m4))
+			return heterozygousauto;//if Cw is heterozygous, half Cw benefit
 	else
 		return 1.0;	
 }
