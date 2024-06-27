@@ -8,7 +8,7 @@ R code used to test effects of Cw and Fw on survival and traits of mass and SMI 
 R code and data used to test differences in female mate acceptance between Cw, Fw and singing-capable males
 
 ### RAD 
-Shell and R code used to demultiplex and align fastq.gz files to the T. oceanicus genome v2 ([Zhang et al. 2024, Nat. Comm.](https://www.nature.com/articles/s41467-024-49344-4)); run SNP calling in Stacks; filter/process the VCF; and perform association tests for the CW phenotype
+Shell and R code used to align fastq.gz files to the T. oceanicus genome v2 ([Zhang et al. 2024, Nat. Comm.](https://www.nature.com/articles/s41467-024-49344-4)); run SNP calling in Stacks; filter/process the VCF; and perform association tests for the CW phenotype
 
 ### RNA
 Shell and R code used to align fastq.gz files to the T. oceanicus genome v2; produce transcriptome assemblies and estimate expression values in Stringtie, and analyse gene counts in DEseq2
