@@ -103,36 +103,32 @@ outputFull();
 ```
 I got essentially identical results using mutationEffect callbacks for each mutation separately -- see below. This can be substituted for the fitnessEffect callback above.
 ```
-mutationEffect code
-define fitness of mutations
-mutationEffect(m4) {auto mutation
+
+mutationEffect(m4) {
 	
 	domcoeff=0.75;dominance coefficient
-	fitincabs = 0.3;fit benefit when m5 is absent (this is 0.3 in all scenarios)
-	fitinccomb = 0.265;fit benefit when m5 is present (this is 0.14 in non-additive scenario, 0.095 in negative scenario)
+	fitincabs = 0.3;
+	fitinccomb = 0.265;
 	
 	if (individual.genome1.countOfMutationsOfType(m5) & individual.sex == "M")
-		 if (homozygous) in non-additive scenario, comment out homozygous if statement
-			return 1.0 + fitinccomb;if m4 homozygous, full combined fitness benefit
-		elsein non-additive scenario, ignore m4 heterozygosity here
-			return 1.0 + fitinccomb*domcoeff;if m4 is heterozygous, multiply by dominance coefficient
+		 if (homozygous)// in non-additive scenario, comment out homozygous if statement
+			return 1.0 + fitinccomb;//if m4 homozygous, full combined fitness benefit
+		else//in non-additive scenario, ignore m4 heterozygosity here
+			return 1.0 + fitinccomb*domcoeff;//if m4 is heterozygous, multiply by dominance coefficient
 	else if (individual.sex == "M")
 		if (homozygous)
-			return 1.0 + fitincabs;if m4 homozygous, full individual fitness benefit
+			return 1.0 + fitincabs;//if m4 homozygous, full individual fitness benefit
 		else
-			return 1.0 + fitincabs*domcoeff;if m4 is heterozygous, multiply by dominance coefficient
+			return 1.0 + fitincabs*domcoeff;//if m4 is heterozygous, multiply by dominance coefficient
 	else
 		return 1.0;
 }
-mutationEffect(m5) {X mutation
-	m5 is x-linked. so only the maternal (genome1) copy provides fitness benefits to males
-	domcoeff=0.75;dominance coefficient	
-	fitincabs = 0.3;fit benefit when m4 absent
-	fitinccomb = 0.265;fit benefit when m5 present
-	 dominance coefficient does not apply to m5 as can only be hemizygous
+mutationEffect(m5) {
+	domcoeff=0.75;//dominance coefficient	
+	fitincabs = 0.3;//fit benefit when m4 absent
+	fitinccomb = 0.265;//fit benefit when m5 present
 	if (individual.countOfMutationsOfType(m4) & individual.sex == "M")
-			return 1.0 + fitinccomb;if m4 present, combined fitness benefit
-	genome2 is ignored because it's inherited from male parent
+			return 1.0 + fitinccomb;//if m4 present, combined fitness benefit
 	else if (individual.sex == "M")
 		return 1.0 + fitincabs;
 	else
