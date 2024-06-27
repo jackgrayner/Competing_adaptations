@@ -1,3 +1,4 @@
+### Identify, call and filter variants
 ```sh
 vcf=$1#provide name of vcf
 ref=~/scratch/Cricket.curated.scaff_v2.fasta
@@ -8,6 +9,7 @@ bgzip $vcf.recode.vcf
 bcftools annotate --set-id '%CHROM:%POS:%REF:%ALT' $vcf.recode.vcf.gz -O z -o $vcf.recode_anno.vcf.gz
 ```
 
+###  View LD
 ```sh
 plink --allow-extra-chr --vcf $vcf.recode_anno.vcf.gz \
 --chr Scaffold_1 --double-id --remove remove.txt --thin 0.001 --make-bed --snps-only --geno 0.5 --allow-no-sex \
@@ -15,11 +17,12 @@ plink --allow-extra-chr --vcf $vcf.recode_anno.vcf.gz \
 java -jar ~/scratch/apps/Haploview.jar -memory 5000
 ```
 
+### Association test
 ```sh
 cp ./fw.fam $vcf.fam
 gemma -lm 2 -miss 0.15 -bfile $vcf -o $vcf
 ```
-
+### Plot association test results
 ```R
 kcg.fw<-read.table('popgenKCG_X.assoc.assoc.txt',h=T)
 kcg.fw<-kcg.fw[nchar(kcg.fw$allele1)==1 & nchar(kcg.fw$allele0)==1,]
