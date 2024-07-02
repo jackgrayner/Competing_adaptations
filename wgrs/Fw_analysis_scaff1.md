@@ -34,7 +34,7 @@ kcg.fw[kcg.fw$Padj<quantile(kcg.fw$Padj,0.001),]$outlier<-"Y"
 #add extra DPs for KCG plot
 scaleFUN <- function(x) sprintf("%.2f", x)
 
-gwas.fw.kcg<-ggplot(kcg.fw,aes(x=ps/1e+06,y=-log10(p_lrt),colour=sig))+
+gwas.fw.kcg<-ggplot(kcg.fw,aes(x=ps/1e+06,y=-log10(p_lrt),colour=outlier))+
 	geom_rect(xmin=95.7,xmax=253.2 ,ymin=(-1),ymax=12,fill='#e9f5dc',alpha=0.3,colour='white')+
 	geom_vline(xintercept=259.2,colour='orange',size=1,alpha=1.5)+
 	geom_point(size=0.7,alpha=0.5)+theme_bw()+
@@ -50,7 +50,7 @@ occ.fw$Padj<-p.adjust(occ.fw$p_lrt,method="BH")
 occ.fw$outlier<-"N"
 occ.fw[occ.fw$Padj<quantile(occ.fw$Padj,0.001),]$outlier<-"Y"
 
-gwas.fw.occ<-ggplot(occ.fw,aes(x=ps/1e+06,y=-log10(p_lrt),colour=sig))+
+gwas.fw.occ<-ggplot(occ.fw,aes(x=ps/1e+06,y=-log10(p_lrt),colour=outlier))+
 	geom_rect(xmin=95.7,xmax=253.2 ,ymin=(-1),ymax=12,fill='#e9f5dc',alpha=0.3,colour='white')+
 	geom_vline(xintercept=259.2,colour='orange',size=1,alpha=1.5)+
 	geom_point(size=0.7,alpha=0.5)+theme_bw()+
