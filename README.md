@@ -1,3 +1,5 @@
+Sequencing and phenotypic data are available from PRJNA1019311 (NCBI SRA) and [UMD DRUM](https://doi.org/10.13016/ehst-57yz), respectively
+
 ### Crosses
 R code and data used to test inheritance of the Cw phenotype and factors influencing its expression
 
