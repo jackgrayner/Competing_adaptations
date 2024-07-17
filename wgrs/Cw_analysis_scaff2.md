@@ -21,7 +21,6 @@ java -jar ~/scratch/apps/Haploview.jar -memory 5000
 ### Merge variant files
 ```sh
 bcftools merge -r Scaffold_2 -m id ../popgenHUH_scaff2.recode_anno.vcf.gz ../popgenKCG_scaff2.recode_anno.vcf.gz ../popgenOCC_scaff2.recode_anno.vcf.gz > HUH_KCG_OCC.vcf.gz
-cat ../popgenHUH_scaff2.fam ../popgenKCG_scaff2.fam ../popgenOCC_scaff2.fam > HUH_KCG_OCC_merged.fam
 ```
 
 ### Run association tests
